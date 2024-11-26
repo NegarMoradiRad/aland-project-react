@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -7,6 +6,31 @@ function App() {
   const [newTask, setNewTask] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+
+  // این تابع وظایف را از LocalStorage می‌خواند
+  useEffect(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    if (savedTasks) {
+      try {
+        setTasks(JSON.parse(savedTasks)); // اگر داده‌ای وجود داشت، آن را به وضعیت tasks می‌دهیم
+        console.log("داده‌ها از LocalStorage بارگذاری شدند:", savedTasks);
+      } catch (error) {
+        console.error("خطا در تجزیه داده‌ها از LocalStorage:", error);
+      }
+    }
+  }, []);
+
+  // این تابع وظایف را در LocalStorage ذخیره می‌کند
+  useEffect(() => {
+    if (tasks.length > 0) {
+      try {
+        console.log("داده‌ها در حال ذخیره شدن در LocalStorage:", tasks);
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      } catch (error) {
+        console.error("خطا در ذخیره داده‌ها در LocalStorage:", error);
+      }
+    }
+  }, [tasks]); // وقتی tasks تغییر کند، آن را در LocalStorage ذخیره می‌کند
 
   const addTask = () => {
     if (newTask.trim() === "") return;
@@ -82,3 +106,4 @@ function App() {
 }
 
 export default App;
+
